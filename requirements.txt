@@ -1,0 +1,4 @@
+eel==0.14.0
+# pafy==0.5.5
+youtube_dl
+git+https://github.com/mps-youtube/pafy

@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>yt-player</title>
+        <!-- Meta Data -->
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!-- Favicon -->
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="img/apple-touch-icon.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="img/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="img/favicon-16x16.png"
+        />
+        <link rel="manifest" href="img/site.webmanifest" />
+
+        <!-- CSS -->
+        <link
+            rel="stylesheet"
+            href="https://bootswatch.com/4/darkly/bootstrap.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+        />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.2.0/nouislider.min.css"
+        />
+        <link rel="stylesheet" href="css/main.css" />
+
+        <!-- Scripts -->
+        <script
+            type="text/javascript"
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+        ></script>
+        <script
+            type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/14.2.0/nouislider.min.js"
+        ></script>
+        <script type="text/javascript" src="/eel.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+    </head>
+
+    <body>
+        <div class="container-fluid h-100">
+            <!-- URL Input Bar -->
+            <div class="row input-bar">
+                <div class="mt-4 col-md-10 mx-auto">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            id="url"
+                            value=""
+                            class="form-control"
+                            placeholder="URL Link or ID"
+                            autofocus
+                        />
+                        <div class="input-group-append">
+                            <button
+                                class="btn btn-success"
+                                type="button"
+                                onclick="addToQueue()"
+                            >
+                                Add To Queue
+                            </button>
+                        </div>
+                        <!-- /.input-group-append -->
+                    </div>
+                    <!-- /.input-group -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+            <!-- Queue -->
+            <div class="row queue">
+                <div class="col">
+                    <div class="row">
+                        <div class="col h5 text-center mt-3 mb-2">QUEUE</div>
+                    </div>
+                    <!-- /.row -->
+
+                    <div class="row">
+                        <div
+                            class="col-md-10 overflow-auto mx-auto mb-2 shadow"
+                            id="queue-container"
+                        >
+                            <div class="p-2" id="queue"></div>
+                        </div>
+                        <!-- /.col -->
+
+                        <div class="row mb-5 pl-4 pr-4 col-10 offset-1">
+                            <div class="col-1">
+                                <a
+                                    onclick="saveLocallyQueue()"
+                                    id="save"
+                                    class=""
+                                    >Save</a
+                                >
+                            </div>
+                            <!-- /.col -->
+
+                            <div class="col-2 offset-4 text-center">
+                                <a onclick="scrollToCurrent()" class=""
+                                    >Current</a
+                                >
+                            </div>
+                            <!-- /.col -->
+
+                            <div class="col-1 offset-4">
+                                <a
+                                    onclick="clearQueue()"
+                                    id="clear"
+                                    class="float-right"
+                                    >Clear</a
+                                >
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+
+            <!-- Player -->
+            <div class="row player fixed-bottom m-2">
+                <div class="col">
+                    <div class="row" id="player">
+                        <div class="col-4">
+                            <div class="row justify-content-end">
+                                <div class="col text-center">
+                                    <img id="current-thumb" src="" />
+                                </div>
+                            </div>
+                            <!-- /.row -->
+
+                            <div
+                                class="row h6 mb-0 mt-2 justify-content-center"
+                            >
+                                <p class="text-center" id="current-title"></p>
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row h5 justify-content-center">
+                                <p id="current-author"></p>
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.col -->
+
+                        <div class="col-6 offset-1">
+                            <audio
+                                id="audio"
+                                onended="onEnded()"
+                                ontimeupdate="timeUpdate()"
+                                onvolumechange="onVolumeChange()"
+                                onloadedmetadata="updateDuration()"
+                                onpause="onPause()"
+                                onplay="onPlay()"
+                            ></audio>
+                            <div class="row" id="progress-bar"></div>
+                            <!-- /.row -->
+
+                            <div class="row pt-2 justify-content-center">
+                                <span id="current-time">00:00</span>
+                                /<span id="duration">00:00</span>
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row pt-4">
+                                <div class="col-2 offset-1 text-center">
+                                    <a
+                                        onclick="toggleRepeat()"
+                                        id="a-repeat"
+                                        class=""
+                                        ><i class="fa fa-repeat fa-lg"></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-2 text-center">
+                                    <a onclick="previousMusic()" class=""
+                                        ><i class="fa fa-backward fa-lg"></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-2 text-center">
+                                    <a
+                                        onclick="togglePlay()"
+                                        class=""
+                                        id="toggle-play"
+                                        ><i class="fa fa-play fa-lg"></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-2 text-center">
+                                    <a onclick="nextMusic()" class=""
+                                        ><i class="fa fa-forward fa-lg"></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-2 text-center">
+                                    <a
+                                        onclick="toggleShuffle()"
+                                        id="a-shuffle"
+                                        class=""
+                                        ><i class="fa fa-random fa-lg"></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row pt-5">
+                                <div class="col-3 offset-1">
+                                    <div
+                                        class="row"
+                                        id="slider-playback-rate"
+                                    ></div>
+                                    <!-- /.row -->
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-3 offset-4">
+                                    <div class="row" id="slider-volume"></div>
+                                    <!-- /.row -->
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+
+                            <div class="row">
+                                <div class="col-3 text-center offset-1">
+                                    <a class=""
+                                        ><i
+                                            class="fa fa-clock-o fa-2x"
+                                            aria-hidden="true"
+                                            onclick="resetPlaybackRate()"
+                                        ></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+
+                                <div class="col-3 text-center offset-4">
+                                    <a class=""
+                                        ><i
+                                            class="fa fa-volume-up fa-2x"
+                                            aria-hidden="true"
+                                            id="a-volume"
+                                            onclick="toggleMute()"
+                                        ></i
+                                    ></a>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                            <!-- /.row -->
+                        </div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+    </body>
+</html>
